@@ -2,16 +2,12 @@
 port=":{{ drone_port }}"
 
 [session]
-{% if drone_session_secret %}
-secret="{{ drone_session_secret }}"
-{%- endif %}
+secret="{{ drone_session_secret | default("") }}"
 expires="{{ drone_session_expires }}"
 
-{% if drone_sslcert and drone_sslkey -%}
 [server.ssl]
-key="{{ drone_sslkey }}"
-cert="{{ drone_sslcert }}"
-{%- endif %}
+key="{{ drone_sslkey | default("") }}"
+cert="{{ drone_sslcert | default("") }}"
 
 [database]
 driver="{{ drone_database_driver }}"
@@ -20,57 +16,42 @@ datasource="{{ drone_database_datasource }}"
 [registration]
 open={{ drone_open_invitations|bool|string|lower }}
 
-{% if drone_github_client and drone_github_secret -%}
 [github]
-client="{{ drone_github_client }}"
-secret="{{ drone_github_secret }}"
-{%- endif %}
+client="{{ drone_github_client | default("") }}"
+secret="{{ drone_github_secret | default("") }}"
 
-{% if drone_github_enterprise_client and drone_github_enteprise_secret and drone_github_enteprise_api_url and drone_github_enteprise_url -%}
 [github_enterprise]
-client="{{ drone_github_enteprise_client }}"
-secret="{{ drone_github_enteprise_secret }}"
-api="{{ drone_github_enteprise_api_url }}"
-url="{{ drone_github_enteprise_url }}"
-private_mode={{ drone_github_enteprise_private_mode|bool|string|lower }}
-skip_verify={{ drone_github_enteprise_skip_verify|bool|string|lower }}
-{%- endif %}
+client="{{ drone_github_enteprise_client | default("") }}"
+secret="{{ drone_github_enteprise_secret | default("") }}"
+api="{{ drone_github_enteprise_api_url | default("") }}"
+url="{{ drone_github_enteprise_url | default("") }}"
+private_mode={{ drone_github_enteprise_private_mode|bool|string|lower | default("") }}
+skip_verify={{ drone_github_enteprise_skip_verify|bool|string|lower | default("") }}
 
-{% if drone_bitbucket_client and drone_bitbucket_secret -%}
 [bitbucket]
-client="{{ drone_bitbucket_client }}"
-secret="{{ drone_bitbucket_secret }}"
-{%- endif %}
+client="{{ drone_bitbucket_client | default("") }}"
+secret="{{ drone_bitbucket_secret | default("") }}"
 
-{% if drone_gitlab_url -%}
 [gitlab]
-url="{{ drone_gitlab_url }}"
-{%- endif %}
+url="{{ drone_gitlab_url | default("") }}"
 
-{% if drone_gogs_secret and drone_gogs_url %}
 [gogs]
-url="{{ drone_gogs_url }}"
-secret="{{ drone_gogs_secret }}"
-{% endif %}
+url="{{ drone_gogs_url | default("") }}"
+secret="{{ drone_gogs_secret | default("") }}"
 
-{% if drone_smtp_server -%}
 [smtp]
-host="{{ drone_smtp_server }}"
-port="{{ drone_smtp_port }}"
-from="{{ drone_smtp_address }}"
-{% if drone_smtp_username and drone_smtp_password %}
-user="{{ drone_smtp_username }}"
-pass="{{ drone_smtp_password }}"
-{% endif %}
-{%- endif %}
+host="{{ drone_smtp_server | default("") }}"
+port="{{ drone_smtp_port | default("") }}"
+from="{{ drone_smtp_address | default("") }}"
+user="{{ drone_smtp_username | default("") }}"
+pass="{{ drone_smtp_password | default("") }}"
 
 [worker]
-{% if drone_worker_cert and drone_worker_key %}
-cert="{{ drone_worker_cert }}"
-key="{{ drone_worker_key }}"
-{% endif %}
+cert="{{ drone_worker_cert | default("") }}"
+key="{{ drone_worker_key | default("") }}"
 nodes=[
 {% for worker in drone_worker_nodes %}
   "{{ worker }}"{{ "," if not loop.last }}
 {% endfor %}
 ]
+

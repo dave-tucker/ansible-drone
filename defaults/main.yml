@@ -12,6 +12,7 @@ drone_github_enteprise_skip_verify: False
 
 drone_worker_nodes:
   - 'unix:///var/run/docker.sock'
+  - 'unix:///var/run/docker.sock'
 
 drone_database_driver: sqlite3
 drone_database_datasource: /var/lib/drone/drone.sqlite
