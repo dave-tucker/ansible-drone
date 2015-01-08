@@ -2,7 +2,7 @@
 - name: Validate database driver
   assert:
     that:
-      - drone_database_driver in ['sqlite3', 'mysql']
+      - drone_database_driver in ['sqlite3', 'mysql', 'postgres']
 
 - name: Install dependencies via apt
   apt:
@@ -90,6 +90,15 @@
     mode: 0600
   when: drone_database_driver == 'mysql'
 
+- name: Template pgsql file for drone database configuration
+  template:
+    src: drone.pgsql.sql.j2
+    dest: /etc/drone/drone.pgsql.sql
+    owner: root
+    group: root
+    mode: 0600
+  when: drone_database_driver == 'postgres'
+
 - name: Template TOML file for drone daemon configuration
   template:
     src: drone.toml.j2
@@ -126,6 +135,18 @@
   register: drone_after_hash
   changed_when: drone_after_hash.stdout|default('')|trim != drone_before_hash.stdout|default('')|trim
   when: drone_database_driver == 'mysql'
+
+- name: Hash postgresql tables to validate change
+  shell: "psql drone drone -e -c 'SELECT * FROM users;' | md5sum"
+  register: drone_before_hash
+  changed_when: False
+  when: drone_database_driver == 'postgres'
+
+- name: Configure postgresql drone database settings
+  shell: "psql drone drone -f /etc/drone/drone.pgsql.sql && psql -e -c 'SELECT * FROM users;' | md5sum"
+  register: drone_after_hash
+  changed_when: drone_after_hash.stdout|default('')|trim != drone_before_hash.stdout|default('')|trim
+  when: drone_database_driver == 'postgres'
 
 - name: Ensure drone is started
   service:
