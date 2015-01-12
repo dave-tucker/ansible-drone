@@ -1,13 +1,13 @@
 [server]
 port=":{{ drone_port }}"
 
-[session]
-secret="{{ drone_session_secret | default("") }}"
-expires="{{ drone_session_expires }}"
-
 [server.ssl]
 key="{{ drone_sslkey | default("") }}"
 cert="{{ drone_sslcert | default("") }}"
+
+[session]
+secret="{{ drone_session_secret | default("") }}"
+expires="{{ drone_session_expires }}"
 
 [database]
 driver="{{ drone_database_driver }}"
@@ -26,7 +26,6 @@ secret="{{ drone_github_enteprise_secret | default("") }}"
 api="{{ drone_github_enteprise_api_url | default("") }}"
 url="{{ drone_github_enteprise_url | default("") }}"
 private_mode={{ drone_github_enteprise_private_mode|bool|string|lower | default("") }}
-skip_verify={{ drone_github_enteprise_skip_verify|bool|string|lower | default("") }}
 
 [bitbucket]
 client="{{ drone_bitbucket_client | default("") }}"
@@ -46,12 +45,13 @@ from="{{ drone_smtp_address | default("") }}"
 user="{{ drone_smtp_username | default("") }}"
 pass="{{ drone_smtp_password | default("") }}"
 
+[docker]
+cert="{{ drone_docker_cert | default("") }}"
+key="{{ drone_docker_cert | default("") }}"
+
 [worker]
-cert="{{ drone_worker_cert | default("") }}"
-key="{{ drone_worker_key | default("") }}"
 nodes=[
 {% for worker in drone_worker_nodes %}
-  "{{ worker }}"{{ "," if not loop.last }}
+  "{{ worker }}"{{ "," if not loop.last else "" }}
 {% endfor %}
 ]
-
