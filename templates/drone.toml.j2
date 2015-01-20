@@ -13,12 +13,10 @@ expires="{{ drone_session_expires }}"
 driver="{{ drone_database_driver }}"
 datasource="{{ drone_database_datasource }}"
 
-[registration]
-open={{ drone_open_invitations|bool|string|lower }}
-
 [github]
 client="{{ drone_github_client | default("") }}"
 secret="{{ drone_github_secret | default("") }}"
+open={{ drone_github_open|bool|string|lower | default("") }}
 
 [github_enterprise]
 client="{{ drone_github_enteprise_client | default("") }}"
@@ -26,17 +24,21 @@ secret="{{ drone_github_enteprise_secret | default("") }}"
 api="{{ drone_github_enteprise_api_url | default("") }}"
 url="{{ drone_github_enteprise_url | default("") }}"
 private_mode={{ drone_github_enteprise_private_mode|bool|string|lower | default("") }}
+open={{ drone_github_enterprise_open|bool|string|lower | default("") }}
 
 [bitbucket]
 client="{{ drone_bitbucket_client | default("") }}"
 secret="{{ drone_bitbucket_secret | default("") }}"
+open={{ drone_bitbucket_open|bool|string|lower | default("") }}
 
 [gitlab]
 url="{{ drone_gitlab_url | default("") }}"
+open={{ drone_gitlab_open|bool|string|lower | default("") }}
 
 [gogs]
 url="{{ drone_gogs_url | default("") }}"
 secret="{{ drone_gogs_secret | default("") }}"
+open={{ drone_gogs_open|bool|string|lower | default("") }}
 
 [smtp]
 host="{{ drone_smtp_server | default("") }}"
